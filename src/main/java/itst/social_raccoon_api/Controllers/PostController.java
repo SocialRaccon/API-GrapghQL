@@ -1,12 +1,8 @@
 package itst.social_raccoon_api.Controllers;
 
-public class Postcontroller {
-    package itst.social_raccoon_api.Controllers;
-
 import itst.social_raccoon_api.Models.PostModel;
-import itst.social_raccoon_api.Repositories.PostRepository;
+import itst.social_raccoon_api.Services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,42 +14,36 @@ import java.util.Optional;
 public class PostController {
 
     @Autowired
-    private PostRepository postRepository;
+    private PostService postService;
 
     @GetMapping
     public List<PostModel> getAllPosts() {
-        return postRepository.findAll();
+        return postService.getAllPosts();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostModel> getPostById(@PathVariable int id) {
-        Optional<PostModel> post = postRepository.findById(id);
+    public ResponseEntity<PostModel> getPostById(@PathVariable Integer id) {
+        Optional<PostModel> post = postService.getPostById(id);
         return post.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<PostModel> createPost(@RequestBody PostModel post) {
-        PostModel savedPost = postRepository.save(post);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
+    public PostModel createPost(@RequestBody PostModel post) {
+        return postService.savePost(post);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PostModel> updatePost(@PathVariable int id, @RequestBody PostModel post) {
-        if (!postRepository.existsById(id)) {
+    public ResponseEntity<PostModel> updatePost(@PathVariable Integer id, @RequestBody PostModel postDetails) {
+        PostModel updatedPost = postService.updatePost(id, postDetails);
+        if (updatedPost == null) {
             return ResponseEntity.notFound().build();
         }
-        post.setIdPost(id);
-        PostModel updatedPost = postRepository.save(post);
         return ResponseEntity.ok(updatedPost);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable int id) {
-        if (!postRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        postRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deletePost(@PathVariable Integer id) {
+        postService.deletePost(id);
+        return ResponseEntity.ok().build();
     }
-}
 }

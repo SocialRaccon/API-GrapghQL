@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Table(name = "Post")
+@Table(name = "post")
 public class PostModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

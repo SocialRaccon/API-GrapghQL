@@ -7,14 +7,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 i
+import static java.lang.reflect.Array.get;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static sun.jvm.hotspot.utilities.AddressOps.greaterThan;
 
 import itst.social_raccoon_api.Models.PostModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PostControllerTest {
+public class SocialRacoonapiApplicationTests{
 	@Autowired
 	private MockMvc mvc;
 

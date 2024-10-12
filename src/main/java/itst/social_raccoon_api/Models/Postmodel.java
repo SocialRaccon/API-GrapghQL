@@ -1,12 +1,13 @@
 package itst.social_raccoon_api.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+
 import java.sql.Timestamp;
 
-@Entity(name = "post")
+@Entity
+@Table(name = "Post")
 public class PostModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

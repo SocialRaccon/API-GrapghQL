@@ -2,15 +2,12 @@ package itst.social_raccoon_api.Controllers;
 
 import itst.social_raccoon_api.Models.PostModel;
 import itst.social_raccoon_api.Services.PostService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/posts")
+
 public class PostController {
 
     @Autowired
@@ -46,4 +43,5 @@ public class PostController {
         postService.deletePost(id);
         return ResponseEntity.ok().build();
     }
+
 }

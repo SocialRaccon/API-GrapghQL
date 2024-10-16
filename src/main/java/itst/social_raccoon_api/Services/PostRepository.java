@@ -1,4 +1,4 @@
-package itst.social_raccoon_api.Repositories;
+package itst.social_raccoon_api.Services;
 
 import itst.social_raccoon_api.Models.PostModel;
 import org.springframework.data.jpa.repository.JpaRepository;

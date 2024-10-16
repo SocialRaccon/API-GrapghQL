@@ -1,9 +1,7 @@
 package itst.social_raccoon_api.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 
 @Entity(name = "image_post")
 public class ImagePostModel {
@@ -63,5 +61,27 @@ public class ImagePostModel {
                 ", thumbnail='" + thumbnail + '\'' +
                 ", idPost=" + idPost +
                 '}';
+    }
+    @Entity(name = "image_post")
+    public static class imagePostModel {
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Integer idImagePost;
+        private String url;
+        private String thumbnail;
+
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "idPost")
+        @JsonBackReference(value = "post-image")
+        private PostModel post;
+        
+
+        public PostModel getPost() {
+            return post;
+        }
+
+        public void setPost(PostModel post) {
+            this.post = post;
+        }
     }
 }

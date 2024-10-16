@@ -18,7 +18,7 @@ public class PostModel {
     @JoinColumn(name = "idUser")
     @JsonBackReference(value = "user-post")
 
-    private UserModel user;
+    private String user;
     private Timestamp dateCreated;
     private String description;
     private String imageUrl;
@@ -30,7 +30,7 @@ public class PostModel {
     public PostModel() {
     }
 
-    public PostModel(String description, String imageUrl, UserModel user, Timestamp dateCreated) {
+    public PostModel(String description, String imageUrl, String user, Timestamp dateCreated) {
         this.description = description;
         this.imageUrl = imageUrl;
         this.user = user;
@@ -61,11 +61,11 @@ public class PostModel {
         this.imageUrl = imageUrl;
     }
 
-    public UserModel getUser() {
+    public String getUser() {
         return user;
     }
 
-    public void setUser(UserModel idUser) {
+    public void setUser(String idUser) {
         this.user = idUser;
     }
 
@@ -87,4 +87,5 @@ public class PostModel {
                 ", dateCreated=" + dateCreated +
                 '}';
     }
+
 }

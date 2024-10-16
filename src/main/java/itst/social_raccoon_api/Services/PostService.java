@@ -30,7 +30,7 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
-    public PostModel updatePost(Integer id, PostModel postDetails) {
+    public PostModel updatePost (Integer id, PostModel postDetails) {
         Optional<PostModel> post = postRepository.findById(id);
         if (post.isPresent()) {
             PostModel existingPost = post.get();

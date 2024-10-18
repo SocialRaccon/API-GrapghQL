@@ -21,9 +21,22 @@ public class PostService {
     public Optional<PostModel> getPostById(Integer id) {
         return postRepository.findById(id);
     }
+    public Optional<PostModel> Description(Integer id){
+        return getPostById(id).map(post ->{
+            String nuevaDescription = "";
+            post.setDescription((nuevaDescription));
+           return   savePost(post);
+        });
+    }
 
     public PostModel savePost(PostModel post) {
         return postRepository.save(post);
+    }
+    public Optional<PostModel> actualizarUrlImagen(Integer id, String nuevaUrlImagen) {
+        return getPostById(id).map(post -> {
+            post.setImageUrl(nuevaUrlImagen);
+            return savePost(post);
+        });
     }
 
     public void deletePost(Integer id) {

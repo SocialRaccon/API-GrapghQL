@@ -14,7 +14,6 @@ public class ImagePostModel {
 
     public ImagePostModel() {
     }
-
     public ImagePostModel(Integer idImagePost, String url, String thumbnail, Integer idPost) {
         this.idImagePost = idImagePost;
         this.url = url;

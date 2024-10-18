@@ -8,18 +8,27 @@ public class ImagePostModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idImagePost;
+
     private String url;
     private String thumbnail;
-    private Integer idPost;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idPost")
+    @JsonBackReference(value = "post-image")
+    private PostModel post;
+
+    // Constructores
     public ImagePostModel() {
     }
-    public ImagePostModel(Integer idImagePost, String url, String thumbnail, Integer idPost) {
+
+    public ImagePostModel(Integer idImagePost, String url, String thumbnail, PostModel post) {
         this.idImagePost = idImagePost;
         this.url = url;
         this.thumbnail = thumbnail;
-        this.idPost = idPost;
+        this.post = post;
     }
+
+    // Getters y Setters
     public Integer getIdImagePost() {
         return idImagePost;
     }
@@ -44,12 +53,12 @@ public class ImagePostModel {
         this.thumbnail = thumbnail;
     }
 
-    public Integer getIdPost() {
-        return idPost;
+    public PostModel getPost() {
+        return post;
     }
 
-    public void setIdPost(Integer idPost) {
-        this.idPost = idPost;
+    public void setPost(PostModel post) {
+        this.post = post;
     }
 
     @Override
@@ -58,29 +67,7 @@ public class ImagePostModel {
                 "idImagePost=" + idImagePost +
                 ", url='" + url + '\'' +
                 ", thumbnail='" + thumbnail + '\'' +
-                ", idPost=" + idPost +
+                ", post=" + post +
                 '}';
-    }
-    @Entity(name = "image_post")
-    public static class imagePostModel {
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Integer idImagePost;
-        private String url;
-        private String thumbnail;
-
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "idPost")
-        @JsonBackReference(value = "post-image")
-        private PostModel post;
-        
-
-        public PostModel getPost() {
-            return post;
-        }
-
-        public void setPost(PostModel post) {
-            this.post = post;
-        }
     }
 }

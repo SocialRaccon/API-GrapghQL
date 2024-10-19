@@ -8,6 +8,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sun.beans.introspect.PropertyInfo.Name.description;
+
 @Entity
 @Table(name = "post")
 public class PostModel {
@@ -27,7 +29,7 @@ public class PostModel {
 
     private Timestamp dateCreated;
     @JsonManagedReference(value = "post-description")
-    @OneToMany(mappedBy = "idPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "idPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private PostDescriptionModel idPostDescription;
 
 
@@ -82,5 +84,9 @@ public class PostModel {
 
     public void setComments(List<CommentModel> comments) {
         this.comments = comments;
+    }
+
+    public Object getDescription() {
+        return description;
     }
 }

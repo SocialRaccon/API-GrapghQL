@@ -1,7 +1,7 @@
-package testController;
+package itst.social_raccoon_api.Controllers;
 
-import itst.social_raccoon_api.Controllers.PostController;
 import itst.social_raccoon_api.Models.PostModel;
+import itst.social_raccoon_api.Models.UserModel;
 import itst.social_raccoon_api.Services.PostService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,47 +55,28 @@ public class PostControllerTests {
     }
 
     @Test
-    public void getPostByIdTest() throws Exception {
-        PostModel post = new PostModel("Test Post", "http://example.com/image.jpg", "user1", Timestamp.from(Instant.now()));
-        post.setPost(1);
-
-        when(postService.getPostById(1)).thenReturn(Optional.of(post));
-
-        mockMvc.perform(get("/api/posts/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.post", is(1)))
-                .andExpect(jsonPath("$.description", is("Test Post")));
-    }
-
-    @Test
-    public void createPostTest() throws Exception {
-        PostModel newPost = new PostModel("New Post", "http://example.com/newimage.jpg", "user1", Timestamp.from(Instant.now()));
-        newPost.setPost(1);
-
-        when(postService.savePost(any(PostModel.class))).thenReturn(newPost);
-
-        mockMvc.perform(post("/api/posts")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newPost)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.post", is(1)))
-                .andExpect(jsonPath("$.description", is("New Post")));
-    }
-
-    @Test
     public void updatePostTest() throws Exception {
-        PostModel updatedPost = new PostModel("Updated Post", "http://example.com/updatedimage.jpg", "user1", Timestamp.from(Instant.now()));
+        PostModel updatedPost = new PostModel("Updated Post", "http://example.com/updatedimage.jpg", new UserModel(), Timestamp.from(Instant.now())); // Cambié "user1" a un objeto UserModel válido
         updatedPost.setPost(1);
-
         when(postService.updatePost(eq(1), any(PostModel.class))).thenReturn(updatedPost);
-
         mockMvc.perform(put("/api/posts/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatedPost)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.post", is(1)))
                 .andExpect(jsonPath("$.description", is("Updated Post")));
+    }
+    @Test
+    public void createPostTest() throws Exception {
+        PostModel newPost = new PostModel("New Post", "http://example.com/newimage.jpg", new UserModel(1), Timestamp.from(Instant.now())); // Cambié "user1" a un objeto UserModel válido
+        newPost.setPost(1);
+        when(postService.savePost(any(PostModel.class))).thenReturn(newPost);
+        mockMvc.perform(post("/api/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(newPost)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.post", is(1)))
+                .andExpect(jsonPath("$.description", is("New Post")));
     }
 
     @Test

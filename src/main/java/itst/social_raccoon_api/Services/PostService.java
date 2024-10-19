@@ -21,17 +21,19 @@ public class PostService {
     public Optional<PostModel> getPostById(Integer id) {
         return postRepository.findById(id);
     }
+
     public Optional<PostModel> Description(Integer id){
-        return getPostById(id).map(post ->{
+        return getPostById(id).map(post -> {
             String nuevaDescription = "";
-            post.setDescription((nuevaDescription));
-           return   savePost(post);
+            post.setDescription(nuevaDescription);
+            return savePost(post);
         });
     }
 
     public PostModel savePost(PostModel post) {
         return postRepository.save(post);
     }
+
     public Optional<PostModel> actualizarUrlImagen(Integer id, String nuevaUrlImagen) {
         return getPostById(id).map(post -> {
             post.setImageUrl(nuevaUrlImagen);
@@ -39,11 +41,11 @@ public class PostService {
         });
     }
 
-    public void deletePost(Integer id) {
+    public void deletePostById(Integer id) {
         postRepository.deleteById(id);
     }
 
-    public PostModel updatePost (Integer id, PostModel postDetails) {
+    public PostModel updatePost(Integer id, PostModel postDetails) {
         Optional<PostModel> post = postRepository.findById(id);
         if (post.isPresent()) {
             PostModel existingPost = post.get();
@@ -53,5 +55,13 @@ public class PostService {
             return postRepository.save(existingPost);
         }
         return null;
+    }
+
+    public Optional<PostModel> findByUser(Integer userId) {
+        return postRepository.findById(userId);
+    }
+
+    public void deletePost(Integer id) {
+
     }
 }

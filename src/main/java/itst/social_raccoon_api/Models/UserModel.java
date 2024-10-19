@@ -1,15 +1,18 @@
 package itst.social_raccoon_api.Models;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
+import com.fasterxml.jackson.annotation.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
 @Entity
 @Table(name = "user")
+@JsonIgnoreProperties({"posts", "followers", "following", "comments"})
+@Schema(description = "Model representing a user")
 public class UserModel {
     @Id
     @Column
@@ -20,12 +23,12 @@ public class UserModel {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostModel> posts;
 
+    @JsonManagedReference(value = "user-follower")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    //@JsonManagedReference(value = "user-follower")
     private List<FollowerModel> followers;
 
+    @JsonManagedReference(value = "user-following")
     @OneToMany(mappedBy = "followerUser", cascade = CascadeType.ALL, orphanRemoval = true)
-    //@JsonManagedReference(value = "user-following")
     private List<FollowerModel> following;
 
     @JsonManagedReference(value = "user-comment")
@@ -47,13 +50,27 @@ public class UserModel {
     @Schema(description = "Second last name of the user", example = "Gomez")
     private String secondLastName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     @Schema(description = "Email of the user", example = "alex2227@hotmail.com")
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "controlNumber", length = 8, unique = true)
     @Schema(description = "Control number of the user", example = "21TE284")
     private String controlNumber;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idCareer", referencedColumnName = "idCareer", nullable = false)
+    @Schema(description = "Career of the user")
+    @JsonProperty("career")
+    private CareerModel career;
+
+    public CareerModel getCareer() {
+        return career;
+    }
+
+    public void setCareer(CareerModel career) {
+        this.career = career;
+    }
 
     public Integer getIdUser() {
         return idUser;

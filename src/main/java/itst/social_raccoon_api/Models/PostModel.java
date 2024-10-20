@@ -3,12 +3,11 @@ package itst.social_raccoon_api.Models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.mapping.Value;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.sun.beans.introspect.PropertyInfo.Name.description;
 
 @Entity
 @Table(name = "post")
@@ -28,16 +27,21 @@ public class PostModel {
     private UserModel user;
 
     private Timestamp dateCreated;
-    @JsonManagedReference(value = "post-description")
-    @OneToOne(mappedBy = "idPost", cascade = CascadeType.ALL, orphanRemoval = true)
-    private PostDescriptionModel idPostDescription;
 
+    @JsonManagedReference(value = "post-description")
+    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private PostDescriptionModel postDescription;
 
     @JsonManagedReference(value = "post-comment")
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentModel> comments;
 
-
+    public static class ResourceNotFoundException extends RuntimeException {
+        public ResourceNotFoundException(String message) {
+            super(message);
+        }
+    }
+    // Getters y Setters
     public Integer getIdPost() {
         return idPost;
     }
@@ -70,12 +74,12 @@ public class PostModel {
         this.dateCreated = dateCreated;
     }
 
-    public PostDescriptionModel getIdPostDescription() {
-        return idPostDescription;
+    public PostDescriptionModel getPostDescription() {
+        return postDescription;
     }
 
-    public void setIdPostDescription(PostDescriptionModel idPostDescription) {
-        this.idPostDescription = idPostDescription;
+    public void setPostDescription(PostDescriptionModel postDescription) {
+        this.postDescription = postDescription;
     }
 
     public List<CommentModel> getComments() {
@@ -84,9 +88,5 @@ public class PostModel {
 
     public void setComments(List<CommentModel> comments) {
         this.comments = comments;
-    }
-
-    public Object getDescription() {
-        return description;
     }
 }

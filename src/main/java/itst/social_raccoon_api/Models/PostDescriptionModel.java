@@ -22,10 +22,11 @@ public class PostDescriptionModel {
 
     @NotNull
     @JsonManagedReference(value = "post-description")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idPost", nullable = false)
     private PostModel idPost;
 
+    // Getters y Setters
     public Integer getIdPostDescription() {
         return idPostDescription;
     }
@@ -49,7 +50,4 @@ public class PostDescriptionModel {
     public void setIdPost(PostModel idPost) {
         this.idPost = idPost;
     }
-
-
-
 }

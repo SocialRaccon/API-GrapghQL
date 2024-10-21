@@ -12,14 +12,14 @@ import java.util.Optional;
 public class PostService {
 
     @Autowired
-    private PostRepository postRepository;
+    private PostRepository PostRepository;
 
     public List<PostModel> getAllPosts() {
-        return postRepository.findAll();
+        return PostRepository.findAll();
     }
 
     public Optional<PostModel> getPostById(Integer id) {
-        return postRepository.findById(id);
+        return PostRepository.findById(id);
     }
 
     public Optional<PostModel> Description(Integer id){
@@ -31,7 +31,7 @@ public class PostService {
     }
 
     public PostModel savePost(PostModel post) {
-        return postRepository.save(post);
+        return PostRepository.save(post);
     }
 
     public Optional<PostModel> actualizarUrlImagen(Integer id, String nuevaUrlImagen) {
@@ -42,23 +42,23 @@ public class PostService {
     }
 
     public void deletePostById(Integer id) {
-        postRepository.deleteById(id);
+        PostRepository.deleteById(id);
     }
 
     public PostModel updatePost(Integer id, PostModel postDetails) {
-        Optional<PostModel> post = postRepository.findById(id);
+        Optional<PostModel> post = PostRepository.findById(id);
         if (post.isPresent()) {
             PostModel existingPost = post.get();
             existingPost.setPostDescription(postDetails.getPostDescription());
             existingPost.setImages(postDetails.getImages());
             existingPost.setDateCreated(postDetails.getDateCreated());
-            return postRepository.save(existingPost);
+            return PostRepository.save(existingPost);
         }
         return null;
     }
 
     public Optional<PostModel> findByUser(Integer userId) {
-        return postRepository.findById(userId);
+        return PostRepository.findById(userId);
     }
 
     public void deletePost(Integer id) {

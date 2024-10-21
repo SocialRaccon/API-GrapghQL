@@ -115,7 +115,7 @@ class PostControllerTests {
         // Assert
         assertNotNull(result);
         assertEquals(nuevaDescripcion, result.getDescription());
-        assertEquals(post, result.getIdPost());
+        assertEquals(post, result.getIdPostDescription());
         verify(postRepository).findById(idPost);
         verify(postRepository).save(post);
     }

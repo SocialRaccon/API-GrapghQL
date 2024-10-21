@@ -31,7 +31,7 @@ public class PostController {
             postDescription.setDescription(nuevaDescripcion);
         } else {
             postDescription = new PostDescriptionModel();
-            postDescription.setIdPost(post);
+            postDescription.setIdPostDescription(post.getIdPost());
             postDescription.setDescription(nuevaDescripcion);
             post.setPostDescription(postDescription);
         }

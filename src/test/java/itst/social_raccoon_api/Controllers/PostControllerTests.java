@@ -1,87 +1,122 @@
 package itst.social_raccoon_api.Controllers;
 
-import itst.social_raccoon_api.Models.PostModel;
-import itst.social_raccoon_api.Models.UserModel;
-import itst.social_raccoon_api.Services.PostService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.Arrays;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.hamcrest.Matchers.*;
+import itst.social_raccoon_api.Models.PostModel;
+import itst.social_raccoon_api.Models.PostDescriptionModel;
+import itst.social_raccoon_api.Repositories.PostRepository;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+class PostControllerTests {
 
-@WebMvcTest(PostController.class)
-public class PostControllerTests {
+    @Mock
+    private PostRepository postRepository;
 
-    @Autowired
-    private MockMvc mockMvc;
+    @InjectMocks
+    private PostController postController;
 
-    @MockBean
-    private PostService postService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Test
-    public void getAllPostsTest() throws Exception {
-        PostModel post1 = new PostModel("Test Post 1", "http://example.com/image1.jpg", "user1", Timestamp.from(Instant.now()));
-        PostModel post2 = new PostModel("Test Post 2", "http://example.com/image2.jpg", "user2", Timestamp.from(Instant.now()));
-        post1.setPost(1);
-        post2.setPost(2);
-
-        when(postService.getAllPosts()).thenReturn(Arrays.asList(post1, post2));
-
-        mockMvc.perform(get("/api/posts")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].post", is(1)))
-                .andExpect(jsonPath("$[1].post", is(2)));
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void updatePostTest() throws Exception {
-        PostModel updatedPost = new PostModel("Updated Post", "http://example.com/updatedimage.jpg", new UserModel(), Timestamp.from(Instant.now())); // Cambié "user1" a un objeto UserModel válido
-        updatedPost.setPost(1);
-        when(postService.updatePost(eq(1), any(PostModel.class))).thenReturn(updatedPost);
-        mockMvc.perform(put("/api/posts/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedPost)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.post", is(1)))
-                .andExpect(jsonPath("$.description", is("Updated Post")));
-    }
-    @Test
-    public void createPostTest() throws Exception {
-        PostModel newPost = new PostModel("New Post", "http://example.com/newimage.jpg", new UserModel(1), Timestamp.from(Instant.now())); // Cambié "user1" a un objeto UserModel válido
-        newPost.setPost(1);
-        when(postService.savePost(any(PostModel.class))).thenReturn(newPost);
-        mockMvc.perform(post("/api/posts")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newPost)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.post", is(1)))
-                .andExpect(jsonPath("$.description", is("New Post")));
+    void testObtenerDescriptionPost_ExistingDescription() {
+        // Arrange
+        Integer idPost = 1;
+        PostModel post = new PostModel();
+        PostDescriptionModel description = new PostDescriptionModel();
+        description.setDescription("Test description");
+        post.setPostDescription(description);
+
+        when(postRepository.findById(idPost)).thenReturn(Optional.of(post));
+
+        // Act
+        String result = postController.obtenerDescriptionPost(idPost);
+
+        // Assert
+        assertEquals("Test description", result);
+        verify(postRepository).findById(idPost);
     }
 
     @Test
-    public void deletePostTest() throws Exception {
-        mockMvc.perform(delete("/api/posts/1"))
-                .andExpect(status().isOk());
+    void testObtenerDescriptionPost_NoDescription() {
+        // Arrange
+        Integer idPost = 1;
+        PostModel post = new PostModel();
+
+        when(postRepository.findById(idPost)).thenReturn(Optional.of(post));
+
+        // Act
+        String result = postController.obtenerDescriptionPost(idPost);
+
+        // Assert
+        assertEquals("Descripción no disponible", result);
+        verify(postRepository).findById(idPost);
+    }
+
+    @Test
+    void testObtenerDescriptionPost_PostNotFound() {
+        // Arrange
+        Integer idPost = 1;
+
+        when(postRepository.findById(idPost)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(PostModel.ResourceNotFoundException.class, () -> {
+            postController.obtenerDescriptionPost(idPost);
+        });
+        verify(postRepository).findById(idPost);
+    }
+
+    @Test
+    void testActualizarDescriptionPost_ExistingDescription() {
+        // Arrange
+        Integer idPost = 1;
+        String nuevaDescripcion = "Updated description";
+        PostModel post = new PostModel();
+        PostDescriptionModel description = new PostDescriptionModel();
+        description.setDescription("Old description");
+        post.setPostDescription(description);
+
+        when(postRepository.findById(idPost)).thenReturn(Optional.of(post));
+        when(postRepository.save(any(PostModel.class))).thenReturn(post);
+
+        // Act
+        PostDescriptionModel result = postController.actualizarDescriptionPost(idPost, nuevaDescripcion);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(nuevaDescripcion, result.getDescription());
+        verify(postRepository).findById(idPost);
+        verify(postRepository).save(post);
+    }
+
+    @Test
+    void testActualizarDescriptionPost_NewDescription() {
+        // Arrange
+        Integer idPost = 1;
+        String nuevaDescripcion = "New description";
+        PostModel post = new PostModel();
+
+        when(postRepository.findById(idPost)).thenReturn(Optional.of(post));
+        when(postRepository.save(any(PostModel.class))).thenReturn(post);
+
+        // Act
+        PostDescriptionModel result = postController.actualizarDescriptionPost(idPost, nuevaDescripcion);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(nuevaDescripcion, result.getDescription());
+        assertEquals(post, result.getIdPost());
+        verify(postRepository).findById(idPost);
+        verify(postRepository).save(post);
     }
 }

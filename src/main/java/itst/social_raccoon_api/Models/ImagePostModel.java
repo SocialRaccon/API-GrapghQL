@@ -14,15 +14,7 @@ public class ImagePostModel {
     private String thumbnail;
     private Integer idPost;
 
-    public ImagePostModel() {
-    }
 
-    public ImagePostModel(Integer idImagePost, String url, String thumbnail, Integer idPost) {
-        this.idImagePost = idImagePost;
-        this.url = url;
-        this.thumbnail = thumbnail;
-        this.idPost = idPost;
-    }
     public Integer getIdImagePost() {
         return idImagePost;
     }
@@ -53,6 +45,10 @@ public class ImagePostModel {
 
     public void setIdPost(Integer idPost) {
         this.idPost = idPost;
+    }
+
+    public void setImages(String nuevaUrlImagen) {
+        this.url = nuevaUrlImagen;
     }
 
     @Override

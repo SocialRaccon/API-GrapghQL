@@ -1,6 +1,6 @@
 package itst.social_raccoon_api.Models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Size;
 @Table(name = "post_description")
 @Schema(description = "Model representing a post description")
 public class PostDescriptionModel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idPostDescription", nullable = false)
@@ -20,11 +21,10 @@ public class PostDescriptionModel {
     @Column(name = "description", nullable = false, length = 150)
     private String description;
 
-    @NotNull
-    @JsonManagedReference(value = "post-description")
+    @JsonBackReference(value = "post-description")
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idPost", nullable = false)
-    private PostModel idPost;
+    private PostModel post;
 
     // Getters y Setters
     public Integer getIdPostDescription() {
@@ -43,11 +43,11 @@ public class PostDescriptionModel {
         this.description = description;
     }
 
-    public PostModel getIdPost() {
-        return idPost;
+    public PostModel getPost() {
+        return post;
     }
 
-    public void setIdPost(PostModel idPost) {
-        this.idPost = idPost;
+    public void setPost(PostModel post) {
+        this.post = post;
     }
 }

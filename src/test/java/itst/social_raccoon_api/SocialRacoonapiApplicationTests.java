@@ -47,10 +47,10 @@ public class SocialRacoonapiApplicationTests {
 
 	@Test
 	public void getAllPostsTest() throws Exception {
-		PostModel post1 = new PostModel("Test Post 1", "http://example.com/image1.jpg", "user1", Timestamp.from(Instant.now()));
-		PostModel post2 = new PostModel("Test Post 2", "http://example.com/image2.jpg", "user2", Timestamp.from(Instant.now()));
-		post1.setPost(1);
-		post2.setPost(2);
+		PostModel post1 = new PostModel();
+		PostModel post2 = new PostModel();
+		post1.setPostDescription(String.valueOf(1));
+		post2.setPostDescription(String.valueOf(2));
 
 		when(postService.getAllPosts()).thenReturn(Arrays.asList(post1, post2));
 
@@ -64,8 +64,8 @@ public class SocialRacoonapiApplicationTests {
 
 	@Test
 	public void getPostByIdTest() throws Exception {
-		PostModel post = new PostModel("Test Post", "http://example.com/image.jpg", "user1", Timestamp.from(Instant.now()));
-		post.setPost(1);
+		PostModel post = new PostModel();
+		post.setPostDescription(String.valueOf(1));
 
 		when(postService.getPostById(1)).thenReturn(Optional.of(post));
 

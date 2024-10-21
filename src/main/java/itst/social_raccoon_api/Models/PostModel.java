@@ -12,12 +12,15 @@ import java.util.List;
 @Entity
 @Table(name = "post")
 public class PostModel {
+    @OneToOne(mappedBy = "post")
+    private PostDescriptionModel
+    postDescription;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idPost;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idUser")
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idPost")
     @JsonBackReference(value = "user-post")
     private List<ImagePostModel> images = new ArrayList<>();
 
@@ -30,11 +33,19 @@ public class PostModel {
 
     @JsonManagedReference(value = "post-description")
     @OneToOne(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private PostDescriptionModel postDescription;
+    private PostDescriptionModel PostDescription;
 
     @JsonManagedReference(value = "post-comment")
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentModel> comments;
+
+    public void setImages(String nuevaUrlImagen) {
+
+    }
+
+    public void setPostDescription(String nuevaDescription) {
+
+    }
 
     public static class ResourceNotFoundException extends RuntimeException {
         public ResourceNotFoundException(String message) {

@@ -25,7 +25,7 @@ public class PostService {
     public Optional<PostModel> Description(Integer id){
         return getPostById(id).map(post -> {
             String nuevaDescription = "";
-            post.setDescription(nuevaDescription);
+            post.setPostDescription(nuevaDescription);
             return savePost(post);
         });
     }
@@ -36,7 +36,7 @@ public class PostService {
 
     public Optional<PostModel> actualizarUrlImagen(Integer id, String nuevaUrlImagen) {
         return getPostById(id).map(post -> {
-            post.setImageUrl(nuevaUrlImagen);
+            post.setImages(nuevaUrlImagen);
             return savePost(post);
         });
     }
@@ -49,8 +49,8 @@ public class PostService {
         Optional<PostModel> post = postRepository.findById(id);
         if (post.isPresent()) {
             PostModel existingPost = post.get();
-            existingPost.setDescription(postDetails.getDescription());
-            existingPost.setImageUrl(postDetails.getImageUrl());
+            existingPost.setPostDescription(postDetails.getPostDescription());
+            existingPost.setImages(postDetails.getImages());
             existingPost.setDateCreated(postDetails.getDateCreated());
             return postRepository.save(existingPost);
         }

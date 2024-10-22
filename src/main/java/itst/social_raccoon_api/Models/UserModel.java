@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "user")
-@JsonIgnoreProperties({"posts", "followers", "following", "comments"})
+@JsonIgnoreProperties({"followers", "following", "comments"})
 @Schema(description = "Model representing a user")
 public class UserModel {
     @Id

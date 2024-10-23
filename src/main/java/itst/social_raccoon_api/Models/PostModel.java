@@ -2,15 +2,9 @@ package itst.social_raccoon_api.Models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-
 import io.swagger.v3.oas.annotations.media.Schema;
-import itst.social_raccoon_api.Dto.PostDTO;
 import jakarta.persistence.*;
-import org.hibernate.mapping.Value;
-
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,7 +14,7 @@ public class PostModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idPost;
-    
+
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "idPost")
     @JsonBackReference(value = "user-post")
@@ -34,8 +28,8 @@ public class PostModel {
     private Timestamp dateCreated;
 
     @JsonManagedReference(value = "post-description")
-    @OneToOne(mappedBy = "idPost", cascade = CascadeType.ALL, orphanRemoval = true)
-    private PostDescriptionModel PostDescription;
+    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
+    private PostDescriptionModel postDescription;
 
     @JsonManagedReference(value = "post-comment")
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -66,11 +60,11 @@ public class PostModel {
     }
 
     public PostDescriptionModel getPostDescription() {
-        return PostDescription;
+        return postDescription;
     }
 
     public void setPostDescription(PostDescriptionModel postDescription) {
-        PostDescription = postDescription;
+        this.postDescription = postDescription;
     }
 
     public Timestamp getDateCreated() {

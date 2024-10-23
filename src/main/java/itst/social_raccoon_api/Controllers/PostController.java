@@ -1,5 +1,6 @@
 package itst.social_raccoon_api.Controllers;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -8,6 +9,7 @@ import itst.social_raccoon_api.Models.PostModel;
 import itst.social_raccoon_api.Services.PostService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,5 +55,33 @@ public class PostController {
 
     private PostModel convertToEntity(PostDTO dto) {
         return modelMapper.map(dto, PostModel.class);
+    }
+
+    @PostMapping
+    @JsonManagedReference
+    @Operation(summary = "Crear un nuevo post",
+            description = "Crea un nuevo post con la información proporcionada")
+    @ApiResponse(responseCode = "201", description = "Post creado exitosamente")
+    @ApiResponse(responseCode = "400", description = "Datos del post inválidos")
+    public ResponseEntity<PostDTO> createPost(@RequestBody PostDTO postDTO) {
+        PostModel postModel = convertToEntity(postDTO);
+        PostModel savedPost = postService.save(postModel);
+        return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(savedPost));
+    }
+
+    public PostService getPostService() {
+        return postService;
+    }
+
+    public void setPostService(PostService postService) {
+        this.postService = postService;
+    }
+
+    public ModelMapper getModelMapper() {
+        return modelMapper;
+    }
+
+    public void setModelMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
     }
 }

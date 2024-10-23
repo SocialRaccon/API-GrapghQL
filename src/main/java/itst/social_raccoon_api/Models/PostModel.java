@@ -1,57 +1,45 @@
 package itst.social_raccoon_api.Models;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+
 import io.swagger.v3.oas.annotations.media.Schema;
+import itst.social_raccoon_api.Dto.PostDTO;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import org.hibernate.mapping.Value;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "post")
-@Schema(description = "Model representing a post")
+@Schema(name = "Post", description = "Post model")
 public class PostModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idPost")
-    @Schema(description = "Unique identifier of the post", example = "1")
     private Integer idPost;
-
-    @Column(name = "dateCreated")
-    @Schema(description = "Date when the post was created", example = "2021-12-31 23:59:59")
-    private Timestamp dateCreated;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "idUser")
+    
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idPost")
     @JsonBackReference(value = "user-post")
-    @Schema(description = "User to which the post belongs")
+    private List<ImagePostModel> images;
+
+    @ManyToOne
+    @JoinColumn(name = "idUser")
+    @JsonManagedReference
     private UserModel user;
 
-    @OneToOne(mappedBy = "idPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Timestamp dateCreated;
+
     @JsonManagedReference(value = "post-description")
-    private PostDescriptionModel idPostDescription;
+    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private PostDescriptionModel PostDescription;
 
     @JsonManagedReference(value = "post-comment")
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentModel> comments;
-
-    @JsonManagedReference(value = "post-reaction")
-    @OneToMany(mappedBy = "idPost", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReactionModel> reactions;
-
-    @JsonManagedReference(value = "post-image")
-    @OneToMany(mappedBy = "idPost", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ImagePostModel> images;
-
-    public PostModel(Integer idPost, UserModel user, Timestamp dateCreated) {
-        this.idPost = idPost;
-        this.user = user;
-        this.dateCreated = dateCreated;
-    }
-
-    public PostModel() {
-    }
 
     public Integer getIdPost() {
         return idPost;
@@ -59,46 +47,6 @@ public class PostModel {
 
     public void setIdPost(Integer idPost) {
         this.idPost = idPost;
-    }
-
-    public UserModel getUser() {
-        return user;
-    }
-
-    public void setUser(UserModel idUser) {
-        this.user = idUser;
-    }
-
-    public Timestamp getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(Timestamp dateCreated) {
-        this.dateCreated = dateCreated;
-    }
-
-    public PostDescriptionModel getIdPostDescription() {
-        return idPostDescription;
-    }
-
-    public void setIdPostDescription(PostDescriptionModel idPostDescription) {
-        this.idPostDescription = idPostDescription;
-    }
-
-    public List<CommentModel> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<CommentModel> comments) {
-        this.comments = comments;
-    }
-
-    public List<ReactionModel> getReactions() {
-        return reactions;
-    }
-
-    public void setReactions(List<ReactionModel> reactions) {
-        this.reactions = reactions;
     }
 
     public List<ImagePostModel> getImages() {
@@ -109,12 +57,35 @@ public class PostModel {
         this.images = images;
     }
 
-    @Override
-    public String toString() {
-        return "PostModel{" +
-                "idPost=" + idPost +
-                ", dateCreated=" + dateCreated +
-                '}';
+    public List<CommentModel> getComments() {
+        return comments;
     }
 
+    public void setComments(List<CommentModel> comments) {
+        this.comments = comments;
+    }
+
+    public PostDescriptionModel getPostDescription() {
+        return PostDescription;
+    }
+
+    public void setPostDescription(PostDescriptionModel postDescription) {
+        PostDescription = postDescription;
+    }
+
+    public Timestamp getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Timestamp dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public UserModel getUser() {
+        return user;
+    }
+
+    public void setUser(UserModel user) {
+        this.user = user;
+    }
 }

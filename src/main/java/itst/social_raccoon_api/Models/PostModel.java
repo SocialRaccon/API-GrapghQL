@@ -34,7 +34,7 @@ public class PostModel {
     private Timestamp dateCreated;
 
     @JsonManagedReference(value = "post-description")
-    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "idPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private PostDescriptionModel PostDescription;
 
     @JsonManagedReference(value = "post-comment")

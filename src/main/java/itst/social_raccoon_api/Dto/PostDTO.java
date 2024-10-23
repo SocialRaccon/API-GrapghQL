@@ -19,7 +19,7 @@ public class PostDTO {
     private String userSecondLastName;
     private String userEmail;
     private String userControlNumber;
-    private CareerModel Career;
+    private CareerModel Career = new CareerModel();
     private String postDescription = String.valueOf(new ArrayList<>());
     private List<CommentModel> comments = new ArrayList<>();
     private List<ReactionDTO> reactions = new ArrayList<>();

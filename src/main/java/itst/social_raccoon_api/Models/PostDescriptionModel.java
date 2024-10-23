@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "post_description")
+@Table(name = "post_descriptions")
 @Schema(description = "Model representing a post description")
 public class PostDescriptionModel {
     @Id
@@ -21,10 +21,10 @@ public class PostDescriptionModel {
     private String description;
 
     @NotNull
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idPost", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "post_id")
     @JsonBackReference(value = "post-description")
-    private PostModel idPost;
+    private PostModel post;
 
     public Integer getIdPostDescription() {
         return idPostDescription;
@@ -34,20 +34,19 @@ public class PostDescriptionModel {
         this.idPostDescription = idPostDescription;
     }
 
-    public String getDescription() {
+    public PostModel getPost() {
+        return post;
+    }
+
+    public void setPost(PostModel post) {
+        this.post = post;
+    }
+
+    public @Size(max = 150) @NotNull String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(@Size(max = 150) @NotNull String description) {
         this.description = description;
     }
-
-    public PostModel getIdPost() {
-        return idPost;
-    }
-
-    public void setIdPost(PostModel idPost) {
-        this.idPost = idPost;
-    }
-
 }

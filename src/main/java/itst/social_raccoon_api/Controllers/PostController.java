@@ -54,7 +54,6 @@ public class PostController {
 
     private PostDTO convertToDTO(PostModel post) {
         PostDTO dto = modelMapper.map(post, PostDTO.class);
-        // Add any additional processing if needed
         return dto;
     }
 

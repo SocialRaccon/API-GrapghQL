@@ -63,8 +63,6 @@ public class PostController {
     }
 
     @PostMapping
-    @JsonBackReference
-    @JsonManagedReference
     @Operation(summary = "Creación de un nuevo post",
             description = "Crea un nuevo post con la información proporcionada")
     @ApiResponse(responseCode = "201", description = "Post creado exitosamente")
@@ -74,21 +72,17 @@ public class PostController {
         required = true,
         content = @io.swagger.v3.oas.annotations.media.Content(
             mediaType = "application/json",
-            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostDTO.class),
-            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                name = "Nuevo post",
-                value = "{\n" +
-                        "  \"content\": \"Este es el contenido del nuevo post\",\n" +
-                        "  \"userId\": 1,\n" +
-                        "  \"imageUrl\": \"https://ejemplo.com/imagen.jpg\"\n" +
-                        "}"
-            )
+            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostDTO.class)
         )
     )
     public ResponseEntity<PostDTO> createPost(@RequestBody PostDTO postDTO) {
-        PostModel postModel = convertToEntity(postDTO);
-        PostModel savedPost = postService.save(postModel);
-        return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(savedPost));
+        try {
+            PostModel postModel = convertToEntity(postDTO);
+            PostModel savedPost = postService.save(postModel);
+            return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(savedPost));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     public PostService getPostService() {

@@ -27,11 +27,13 @@ public class ImagePostModel {
     @Size(max = 255)
     @NotNull
     @Column(name = "imageUrl", nullable = false)
+    @Schema(description = "URL of the image", example = "https://example.com/image.jpg")
     private String imageUrl;
 
     @Size(max = 255)
     @NotNull
     @Column(name = "imageThumbnailUrl", nullable = false)
+    @Schema(description = "Thumbnail URL of the image", example = "https://example.com/thumbnail.jpg")
     private String imageThumbnailUrl;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

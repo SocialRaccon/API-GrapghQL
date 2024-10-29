@@ -117,4 +117,9 @@ public class PostModel {
                 '}';
     }
 
+    public void setImageUrl(String imageUrl) {
+        if (this.images != null && !this.images.isEmpty()) {
+            this.images.get(0).setImageUrl(imageUrl);
+        }
+    }
 }

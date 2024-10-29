@@ -148,4 +148,19 @@ public class PostController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PutMapping("/{id}/image")
+    @Operation(summary = "Update post image", description = "Updates the image URL of a specific post")
+    @ApiResponse(responseCode = "200", description = "Image updated successfully")
+    @ApiResponse(responseCode = "404", description = "Post not found")
+    public ResponseEntity<PostDTO> updatePostImage(@PathVariable Integer id, @RequestParam String imageUrl) {
+        try {
+            PostModel postModel = postService.findById(id);
+            postModel.setImageUrl(imageUrl);
+            PostModel updatedPost = postService.save(postModel);
+            return ResponseEntity.ok(convertToDTO(updatedPost));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

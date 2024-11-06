@@ -79,6 +79,7 @@ public class UserModel {
     @JsonProperty("career")
     private CareerModel career;
 
+
     public UserModel(){
 
     }

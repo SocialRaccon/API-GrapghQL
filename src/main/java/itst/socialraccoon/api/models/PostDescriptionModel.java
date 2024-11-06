@@ -17,8 +17,7 @@ public class PostDescriptionModel {
     private Integer idPostDescription;
 
     @Size(max = 150)
-    @NotNull
-    @Column(name = "description", nullable = false, length = 150)
+    @Column(name = "description", length = 150)
     @Schema(description = "Description of the post", example = "This is a post")
     private String description;
 

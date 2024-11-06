@@ -3,8 +3,11 @@ package itst.socialraccoon.api.models;
 import jakarta.persistence.*;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
 
-
+@Getter
+@Setter
 @Entity(name = "authentication")
 @Schema(description = "Model representing an authentication")
 public class AuthenticationModel {
@@ -24,45 +27,5 @@ public class AuthenticationModel {
     @OneToOne(mappedBy = "authentication", fetch = FetchType.LAZY)
     private UserModel user;
 
-    public AuthenticationModel() {
-    }
 
-    public AuthenticationModel(Integer idAuthentication, String email, String password, UserModel user) {
-        this.idAuthentication = idAuthentication;
-        this.email = email;
-        this.password = password;
-        this.user = user;
-    }
-
-    public Integer getIdAuthentication() {
-        return idAuthentication;
-    }
-
-    public void setIdAuthentication(Integer idAuthentication) {
-        this.idAuthentication = idAuthentication;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public UserModel getUser() {
-        return user;
-    }
-
-    public void setUser(UserModel user) {
-        this.user = user;
-    }
 }

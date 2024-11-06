@@ -1,0 +1,197 @@
+scalar SqlTimestamp
+
+schema {
+    query: Query
+}
+
+"""
+Query type for fetching profile data.
+"""
+type Query {
+    """
+    Retrieves a profile by its unique ID.
+    - **id**: The unique identifier of the profile.
+    """
+    getProfileById(id: ID!): Profile
+
+    """
+    Retrieves a profile by the user's control number.
+    - **controlNumber**: The control number of the user.
+    """
+    getProfileByControlNumber(controlNumber: String!): Profile
+
+    """
+    Retrieves a list of posts associated with a profile.
+    - **profileId**: The ID of the profile to fetch posts for.
+    - **limit**: The maximum number of posts to return. Default is 10.
+    - **offset**: The number of posts to skip before starting to collect the result set. Default is 0.
+    """
+    getProfilePosts(profileId: ID!, limit: Int = 10, offset: Int = 0): [Post!]!
+
+    """
+    Retrieves a list of profiles that match the given query.
+    - **query**: The search query to match profiles against.
+    - **limit**: The maximum number of profiles to return. Default is 10.
+    """
+    searchProfiles(query: String!, limit: Int): [Profile!]!
+}
+
+"""
+Represents a user profile.
+"""
+type Profile {
+    idProfile: ID!
+    description: String!
+    idUser: UserModel!
+    images: [ImageProfileModel!]!
+}
+
+"""
+Represents a post made by a user.
+"""
+type Post {
+    idPost: ID!
+    dateCreated: SqlTimestamp!
+    idPostDescription: PostDescriptionModel!
+    images: [ImagePostModel!]!
+    comments: [CommentModel!]!
+    reactions: [ReactionModel!]!
+    user: UserModel!
+}
+
+"""
+Represents the authentication details for a user.
+"""
+type AuthenticationModel {
+    email: String!
+    idAuthentication: Int!
+    password: String!
+    user: UserModel!
+}
+
+"""
+Represents a career or field of study.
+"""
+type CareerModel {
+    acronym: String!
+    idCareer: Int!
+    name: String!
+}
+
+"""
+Represents a comment made on a post.
+"""
+type CommentModel {
+    comment: String!
+    date: SqlTimestamp!
+    idComment: Int!
+    post: PostModel!
+    user: UserModel!
+}
+
+"""
+Represents an image associated with a post.
+"""
+type ImagePostModel {
+    idImagePost: Int!
+    idPost: PostModel!
+    imageThumbnailUrl: String!
+    imageUrl: String!
+}
+
+"""
+Represents an image associated with a user profile.
+"""
+type ImageProfileModel {
+    idImageProfile: Int!
+    imageThumbnailUrl: String!
+    imageUrl: String!
+    profile: ProfileModel!
+}
+
+"""
+Represents the description of a post.
+"""
+type PostDescriptionModel {
+    description: String!
+    idPost: PostModel!
+    idPostDescription: ID!
+}
+
+"""
+Represents a post made by a user.
+"""
+type PostModel {
+    comments: [CommentModel]!
+    dateCreated: SqlTimestamp!
+    idPost: Int!
+    idPostDescription: PostDescriptionModel!
+    images: [ImagePostModel]!
+    reactions: [ReactionModel]!
+    user: UserModel!
+}
+
+"""
+Represents a user profile.
+"""
+type ProfileModel {
+    description: String!
+    idProfile: Int!
+    idUser: UserModel!
+    images: [ImageProfileModel]!
+}
+
+"""
+Represents a user in the system.
+"""
+type UserModel {
+    authentication: AuthenticationModel!
+    career: CareerModel!
+    comments: [CommentModel]!
+    controlNumber: String!
+    followers: [RelationshipModel]!
+    following: [RelationshipModel]!
+    idUser: Int!
+    lastName: String!
+    name: String!
+    posts: [PostModel]!
+    profile: ProfileModel!
+    reactions: [ReactionModel]!
+    secondLastName: String!
+}
+
+"""
+Represents an icon used for reactions.
+"""
+type ReactionIconModel {
+    iconThumbnailUrl: String!
+    iconUrl: String!
+    idReactionIcon: Int!
+}
+
+"""
+Represents a reaction to a post.
+"""
+type ReactionModel {
+    date: SqlTimestamp!
+    idPost: PostModel!
+    idReactionType: ReactionTypeModel!
+    idUser: UserModel!
+}
+
+"""
+Represents a type of reaction.
+"""
+type ReactionTypeModel {
+    idReactionType: Int!
+    name: String!
+    reactionIcon: ReactionIconModel!
+}
+
+"""
+Represents a relationship between two users.
+"""
+type RelationshipModel {
+    followerUser: UserModel!
+    user: UserModel!
+}

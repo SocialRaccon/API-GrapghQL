@@ -1,0 +1,107 @@
+scalar SqlTimestamp
+
+schema {
+    query: Query
+}
+
+type Query {
+    getAll: [ProfileModel]
+}
+
+type AuthenticationModel {
+    email: String!
+    idAuthentication: Int!
+    password: String!
+    user: UserModel!
+}
+
+type CareerModel {
+    acronym: String!
+    idCareer: Int!
+    name: String!
+}
+
+type CommentModel {
+    comment: String!
+    date: SqlTimestamp!
+    idComment: Int!
+    post: PostModel!
+    user: UserModel!
+}
+
+type ImagePostModel {
+    idImagePost: Int!
+    idPost: PostModel!
+    imageThumbnailUrl: String!
+    imageUrl: String!
+}
+
+type ImageProfileModel {
+    idImageProfile: Int!
+    imageThumbnailUrl: String!
+    imageUrl: String!
+    profile: ProfileModel!
+}
+
+type PostDescriptionModel {
+    description: String!
+    idPost: PostModel!
+    idPostDescription: Int!
+}
+
+type PostModel {
+    comments: [CommentModel]!
+    dateCreated: SqlTimestamp!
+    idPost: Int!
+    idPostDescription: PostDescriptionModel!
+    images: [ImagePostModel]!
+    reactions: [ReactionModel]!
+    user: UserModel!
+}
+
+type ProfileModel {
+    description: String!
+    idProfile: Int!
+    idUser: UserModel!
+    images: [ImageProfileModel]!
+}
+
+type UserModel {
+    authentication: AuthenticationModel!
+    career: CareerModel!
+    comments: [CommentModel]!
+    controlNumber: String!
+    followers: [RelationshipModel]!
+    following: [RelationshipModel]!
+    idUser: Int!
+    lastName: String!
+    name: String!
+    posts: [PostModel]!
+    profile: ProfileModel!
+    reactions: [ReactionModel]!
+    secondLastName: String!
+}
+
+type ReactionIconModel {
+    iconThumbnailUrl: String!
+    iconUrl: String!
+    idReactionIcon: Int!
+}
+
+type ReactionModel {
+    date: SqlTimestamp!
+    idPost: PostModel!
+    idReactionType: ReactionTypeModel!
+    idUser: UserModel!
+}
+
+type ReactionTypeModel {
+    idReactionType: Int!
+    name: String!
+    reactionIcon: ReactionIconModel!
+}
+
+type RelationshipModel {
+    followerUser: UserModel!
+    user: UserModel!
+}

@@ -1,10 +1,10 @@
 package itst.socialraccoon.api.configuration;
 
 import graphql.language.StringValue;
-import graphql.schema.Coercing;
-import graphql.schema.GraphQLScalarType;
+import graphql.schema.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 
 import java.sql.Timestamp;
 
@@ -12,29 +12,50 @@ import java.sql.Timestamp;
 public class GraphQLConfig {
 
     @Bean
-    public GraphQLScalarType sqlTimestamp() {
+    public GraphQLScalarType sqlTimestampScalar() {
         return GraphQLScalarType.newScalar()
                 .name("SqlTimestamp")
-                .description("Custom scalar type for SQL Timestamp")
+                .description("Java SQL Timestamp scalar")
                 .coercing(new Coercing<Timestamp, String>() {
                     @Override
                     public String serialize(Object dataFetcherResult) {
-                        return ((Timestamp) dataFetcherResult).toInstant().toString();
+                        if (dataFetcherResult instanceof Timestamp) {
+                            return dataFetcherResult.toString();
+                        }
+                        throw new CoercingSerializeException("Expected a Timestamp object.");
                     }
 
                     @Override
                     public Timestamp parseValue(Object input) {
-                        return Timestamp.from(java.time.Instant.parse(input.toString()));
+                        try {
+                            if (input instanceof String) {
+                                return Timestamp.valueOf((String) input);
+                            }
+                            throw new CoercingParseValueException("Expected a String");
+                        } catch (IllegalArgumentException e) {
+                            throw new CoercingParseValueException(
+                                    String.format("Not a valid timestamp: '%s'.", input), e
+                            );
+                        }
                     }
 
                     @Override
                     public Timestamp parseLiteral(Object input) {
                         if (input instanceof StringValue) {
-                            return Timestamp.from(java.time.Instant.parse(((StringValue) input).getValue()));
+                            try {
+                                return Timestamp.valueOf(((StringValue) input).getValue());
+                            } catch (IllegalArgumentException e) {
+                                throw new CoercingParseLiteralException(e);
+                            }
                         }
-                        return null;
+                        throw new CoercingParseLiteralException("Expected a StringValue.");
                     }
                 })
                 .build();
+    }
+
+    @Bean
+    public RuntimeWiringConfigurer runtimeWiringConfigurer(GraphQLScalarType sqlTimestampScalar) {
+        return builder -> builder.scalar(sqlTimestampScalar);
     }
 }

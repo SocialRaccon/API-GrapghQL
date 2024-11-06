@@ -66,5 +66,4 @@ public class ProfileModel {
     public void setImages(Set<ImageProfileModel> images) {
         this.images = images;
     }
-
 }

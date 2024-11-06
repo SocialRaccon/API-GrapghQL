@@ -50,10 +50,6 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
-    public List<PostModel> findByUser(Integer id) {
-        return postRepository.findByUser(id);
-    }
-
     public List<PostModel> findByUser(Integer userId, int pageNumber, int pageSize) {
         if (pageNumber < 0 || pageSize < 1) {
             throw new IllegalArgumentException("Invalid page number or size");

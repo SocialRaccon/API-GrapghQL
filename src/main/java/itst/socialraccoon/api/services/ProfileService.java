@@ -1,11 +1,15 @@
 package itst.socialraccoon.api.services;
+
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
-import itst.socialraccoon.api.dtos.ProfileDTO;
+import itst.socialraccoon.api.models.PostModel;
 import itst.socialraccoon.api.models.ProfileModel;
+import itst.socialraccoon.api.repositories.PostRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import itst.socialraccoon.api.repositories.ProfileRepository;
 import jakarta.transaction.Transactional;
@@ -18,7 +22,7 @@ public class ProfileService {
     private ProfileRepository profileRepository;
 
     @Autowired
-    private ImageStorageService imageStorageService;
+    private PostRepository postRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -27,43 +31,41 @@ public class ProfileService {
         return profileRepository.findAll();
     }
 
-    public ProfileModel save(ProfileModel authentication) {
-        return profileRepository.save(authentication);
-    }
-
-    public ProfileModel findById(Integer id) {
-        return profileRepository.findById(id).orElse(null);
-    }
-
-    public ProfileModel findByUserId(Integer id) {
-        return profileRepository.findByUserId(id);
-    }
-
-    @Transactional
-    public ProfileModel update(ProfileModel profile) {
+    public ProfileModel save(ProfileModel profile) {
         return profileRepository.save(profile);
     }
 
-    public ProfileDTO updateWithDTO(ProfileModel profile) {
-        ProfileModel profileModel = profileRepository.save(profile);
-        ProfileDTO profileDTO = modelMapper.map(profileModel, ProfileDTO.class);
-        return profileDTO;
+    public ProfileModel findById(Integer id) {
+        return profileRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Profile not found with id: " + id));
     }
 
-    public void delete(Integer id) {
-        profileRepository.deleteById(id);
+    public Optional<ProfileModel> findByUserControlNumber(String controlNumber) {
+        return profileRepository.findByIdUser_ControlNumber(controlNumber);
     }
 
-    public ProfileDTO getProfileByUserId(Integer userId) {
-        ProfileModel profile = profileRepository.findByUserId(userId);
-        if (profile == null) {
-            throw new NoSuchElementException("Profile not found for user with ID: " + userId);
+    public List<PostModel> findPostsByProfileId(Integer profileId, Integer limit, Integer offset) {
+        // First check if profile exists
+        ProfileModel profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new NoSuchElementException("Profile not found with id: " + profileId));
+
+        try {
+            // If profile exists, get their posts
+            return postRepository.findByUser(profile.getIdUser().getIdUser(), limit, offset);
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching posts for profile: " + profileId, e);
         }
-
-        // Convert ProfileModel to ProfileDTO using ModelMapper
-        ProfileDTO profileDTO = modelMapper.map(profile, ProfileDTO.class);
-
-        return profileDTO;
     }
 
+    public List<ProfileModel> searchProfiles(String query, Integer limit) {
+        if (query == null || query.trim().isEmpty()) {
+            throw new IllegalArgumentException("Search query cannot be empty");
+        }
+        return profileRepository.searchProfiles(query, PageRequest.of(0, limit));
+    }
+
+    public ProfileModel getProfileWithStats(Integer profileId) {
+        return profileRepository.findById(profileId)
+                .orElseThrow(() -> new NoSuchElementException("Profile not found with id: " + profileId));
+    }
 }

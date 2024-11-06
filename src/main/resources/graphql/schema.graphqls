@@ -8,28 +8,13 @@ type Query {
     getProfileById(id: ID!): Profile
     getProfileByControlNumber(controlNumber: String!): Profile
     getProfilePosts(profileId: ID!, limit: Int = 10, offset: Int = 0): [Post!]!
-    searchProfiles(query: String!, limit: Int = 10): [Profile!]!
-    getProfileWithStats(profileId: ID!): ProfileStats!
 }
 
 type Profile {
     idProfile: ID!
     description: String!
-    user: UserModel!
+    idUser: UserModel!
     images: [ImageProfileModel!]!
-    followersCount: Int!
-    followingCount: Int!
-    postsCount: Int!
-}
-
-type ProfileStats {
-    profile: Profile!
-    totalPosts: Int!
-    totalFollowers: Int!
-    totalFollowing: Int!
-    totalLikes: Int!
-    totalComments: Int!
-    recentPosts: [Post!]!
 }
 
 type Post {

@@ -2,6 +2,7 @@ package itst.socialraccoon.api.configuration;
 
 import graphql.language.StringValue;
 import graphql.schema.*;
+import itst.socialraccoon.api.exceptions.GraphQLExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.graphql.execution.RuntimeWiringConfigurer;
@@ -58,4 +59,6 @@ public class GraphQLConfig {
     public RuntimeWiringConfigurer runtimeWiringConfigurer(GraphQLScalarType sqlTimestampScalar) {
         return builder -> builder.scalar(sqlTimestampScalar);
     }
+
+    @Bean public GraphQLExceptionHandler graphQLExceptionHandler() { return new GraphQLExceptionHandler(); }
 }

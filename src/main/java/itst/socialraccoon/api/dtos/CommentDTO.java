@@ -1,16 +1,18 @@
 package itst.socialraccoon.api.dtos;
 
+import java.sql.Timestamp;
+
 public class CommentDTO {
     private Integer idComment;
     private Integer idUser;
     private Integer idPost;
     private String comment;
-    private String date;
+    private Timestamp date;
 
     public CommentDTO() {
     }
 
-    public CommentDTO(Integer idComment, Integer idUser, Integer idPost, String comment, String date) {
+    public CommentDTO(Integer idComment, Integer idUser, Integer idPost, String comment, Timestamp date) {
         this.idComment = idComment;
         this.idUser = idUser;
         this.idPost = idPost;
@@ -50,11 +52,11 @@ public class CommentDTO {
         this.comment = comment;
     }
 
-    public String getDate() {
+    public Timestamp getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Timestamp date) {
         this.date = date;
     }
 }

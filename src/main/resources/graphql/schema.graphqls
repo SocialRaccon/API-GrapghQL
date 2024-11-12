@@ -12,13 +12,13 @@ type Query {
     Retrieves a profile by its unique ID.
     - **id**: The unique identifier of the profile.
     """
-    getProfileById(id: ID!): Profile
+    getProfileById(id: ID!): ProfileDTO
 
     """
     Retrieves a profile by the user's control number.
     - **controlNumber**: The control number of the user.
     """
-    getProfileByControlNumber(controlNumber: String!): Profile
+    getProfileByControlNumber(controlNumber: String!): ProfileDTO
 
     """
     Retrieves a list of posts associated with a profile.
@@ -26,14 +26,65 @@ type Query {
     - **limit**: The maximum number of posts to return. Default is 10.
     - **offset**: The number of posts to skip before starting to collect the result set. Default is 0.
     """
-    getProfilePosts(profileId: ID!, limit: Int = 10, offset: Int = 0): [Post!]!
+    getProfilePosts(profileId: ID!, limit: Int = 10, offset: Int = 0): [PostDTO!]!
 
     """
     Retrieves a list of profiles that match the given query.
     - **query**: The search query to match profiles against.
     - **limit**: The maximum number of profiles to return. Default is 10.
     """
-    searchProfiles(query: String!, limit: Int): [Profile!]!
+    searchProfiles(query: String!, limit: Int): [ProfileDTO!]!
+}
+
+type PostDTO {
+    idPost: ID!
+    dateCreated: SqlTimestamp!
+    postDescription: String!
+    images: [ImagePostModel!]!
+    comments: [CommentDTO!]!
+    reactions: [ReactionDTO!]!
+    idUser: Int!
+}
+"""
+@Schema(description = "Unique identifier of the profile", example = "1")
+private Integer idProfile;
+
+@Schema(description = "Description of the profile", example = "This is a description")
+private String description;
+
+@Schema(description = "Name of the user", example = "Juan")
+private String userName;
+
+@Schema(description = "Unique identifier of the user", example = "1")
+private Integer idUser;
+"""
+
+type ProfileDTO {
+    idProfile: Int!
+    description: String!
+    userName: String!
+    idUser: Int!
+    images: [ImageProfileModel!]!
+}
+
+type ReactionDTO {
+    idUser: Int!
+    userName: String!
+    idPost: Int!
+    date: SqlTimestamp!
+    idReactionType: Int!
+    reactionName: String!
+    reactionIcon: String!
+}
+
+
+
+type CommentDTO {
+    idComment: Int!
+    idUser: Int!
+    idPost: Int!
+    comment: String!
+    date: SqlTimestamp!
 }
 
 """
@@ -64,9 +115,6 @@ Represents the authentication details for a user.
 """
 type AuthenticationModel {
     email: String!
-    idAuthentication: Int!
-    password: String!
-    user: UserModel!
 }
 
 """
@@ -74,8 +122,6 @@ Represents a career or field of study.
 """
 type CareerModel {
     acronym: String!
-    idCareer: Int!
-    name: String!
 }
 
 """
@@ -94,7 +140,6 @@ Represents an image associated with a post.
 """
 type ImagePostModel {
     idImagePost: Int!
-    idPost: PostModel!
     imageThumbnailUrl: String!
     imageUrl: String!
 }
@@ -106,7 +151,6 @@ type ImageProfileModel {
     idImageProfile: Int!
     imageThumbnailUrl: String!
     imageUrl: String!
-    profile: ProfileModel!
 }
 
 """
@@ -147,17 +191,9 @@ Represents a user in the system.
 type UserModel {
     authentication: AuthenticationModel!
     career: CareerModel!
-    comments: [CommentModel]!
     controlNumber: String!
-    followers: [RelationshipModel]!
-    following: [RelationshipModel]!
     idUser: Int!
-    lastName: String!
     name: String!
-    posts: [PostModel]!
-    profile: ProfileModel!
-    reactions: [ReactionModel]!
-    secondLastName: String!
 }
 
 """
@@ -174,7 +210,6 @@ Represents a reaction to a post.
 """
 type ReactionModel {
     date: SqlTimestamp!
-    idPost: PostModel!
     idReactionType: ReactionTypeModel!
     idUser: UserModel!
 }

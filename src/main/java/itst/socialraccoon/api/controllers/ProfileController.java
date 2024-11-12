@@ -1,8 +1,11 @@
 package itst.socialraccoon.api.controllers;
 
+import itst.socialraccoon.api.dtos.PostDTO;
+import itst.socialraccoon.api.dtos.ProfileDTO;
 import itst.socialraccoon.api.models.ProfileModel;
 import itst.socialraccoon.api.models.PostModel;
 import itst.socialraccoon.api.services.ProfileService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -21,25 +24,29 @@ public class ProfileController {
     @Autowired
     private ProfileService profileService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @QueryMapping
-    public ProfileModel getProfileById(@Argument Integer id) {
+    public ProfileDTO getProfileById(@Argument Integer id) {
         ProfileModel profile = profileService.findById(id);
         if (profile == null) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Profile not found with id: " + id);
         }
-        return profile;
+        return convertToDTO(profile);
     }
 
     @QueryMapping
-    public ProfileModel getProfileByControlNumber(@Argument String controlNumber) {
+    public ProfileDTO getProfileByControlNumber(@Argument String controlNumber) {
         return profileService.findByUserControlNumber(controlNumber)
+                .map(this::convertToDTO)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Profile not found with control number: " + controlNumber));
     }
 
     @QueryMapping
-    public List<PostModel> getProfilePosts(
+    public List<PostDTO> getProfilePosts(
             @Argument Integer profileId,
             @Argument @DefaultValue("10") Integer limit,
             @Argument @DefaultValue("0") Integer offset) {
@@ -47,17 +54,33 @@ public class ProfileController {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Limit and offset must be non-negative");
         }
-        return profileService.findPostsByProfileId(profileId, limit, offset);
+        List<PostModel> posts = profileService.findPostsByProfileId(profileId, limit, offset);
+        return posts.stream()
+                .map(this::convertToDTO)
+                .toList();
     }
 
     @QueryMapping
-    public List<ProfileModel> searchProfiles(
+    public List<ProfileDTO> searchProfiles(
             @Argument String query,
             @Argument @DefaultValue("10") Integer limit) {
         if (query == null || query.trim().isEmpty()) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Search query cannot be empty");
         }
-        return profileService.searchProfiles(query, limit);
+        List<ProfileModel> profiles = profileService.searchProfiles(query, limit);
+        return profiles.stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    private PostDTO convertToDTO(PostModel post) {
+        PostDTO dto = modelMapper.map(post, PostDTO.class);
+        return dto;
+    }
+
+    private ProfileDTO convertToDTO(ProfileModel profile) {
+        ProfileDTO dto = modelMapper.map(profile, ProfileDTO.class);
+        return dto;
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 @Table(name = "user")
 @JsonIgnoreProperties({"posts", "followers", "following", "comments"})
 @Schema(description = "Model representing a user")
-public class UserModel {
+public class    UserModel {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)

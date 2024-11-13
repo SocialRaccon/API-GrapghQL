@@ -9,7 +9,7 @@ class SocialRaccoonApiApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
+	
 	@Test
 	void testMain() {
 		SocialRaccoonApiApplication.main(new String[] {});

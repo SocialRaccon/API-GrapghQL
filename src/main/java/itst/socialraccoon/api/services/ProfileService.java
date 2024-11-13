@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import itst.socialraccoon.api.dtos.ProfileDTO;
 import itst.socialraccoon.api.models.PostModel;
 import itst.socialraccoon.api.models.ProfileModel;
 import itst.socialraccoon.api.repositories.PostRepository;
@@ -67,5 +68,10 @@ public class ProfileService {
     public ProfileModel getProfileWithStats(Integer profileId) {
         return profileRepository.findById(profileId)
                 .orElseThrow(() -> new NoSuchElementException("Profile not found with id: " + profileId));
+    }
+
+     public ProfileDTO updateWithDTO(ProfileModel profileModel) {
+        ProfileModel updatedProfile = profileRepository.save(profileModel);
+        return modelMapper.map(updatedProfile, ProfileDTO.class);
     }
 }

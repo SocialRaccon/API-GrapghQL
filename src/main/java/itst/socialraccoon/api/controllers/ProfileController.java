@@ -4,6 +4,7 @@ import itst.socialraccoon.api.dtos.PostDTO;
 import itst.socialraccoon.api.dtos.ProfileDTO;
 import itst.socialraccoon.api.models.ProfileModel;
 import itst.socialraccoon.api.models.PostModel;
+import itst.socialraccoon.api.services.ImageProfileService;
 import itst.socialraccoon.api.services.ProfileService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,6 +25,9 @@ public class ProfileController {
 
     @Autowired
     private ProfileService profileService;
+
+    @Autowired
+    private ImageProfileService imageProfileService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -72,6 +77,23 @@ public class ProfileController {
         return profiles.stream()
                 .map(this::convertToDTO)
                 .toList();
+    }
+
+    @MutationMapping
+    public ProfileDTO updateProfileByUserId(@Argument Integer userId, @Argument String description) {
+        ProfileModel profileModel = profileService.findById(userId);
+        if (profileModel == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User profile not found with id: " + userId);
+        }
+        profileModel.setDescription(description);
+        ProfileDTO updatedProfile = profileService.updateWithDTO(profileModel);
+        return updatedProfile;
+    }
+
+    @MutationMapping
+    public String deleteImageByImageId(@Argument Integer imageId) {
+        imageProfileService.delete(imageId);
+        return "Image deleted successfully";
     }
 
     private PostDTO convertToDTO(PostModel post) {

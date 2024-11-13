@@ -2,6 +2,7 @@ scalar SqlTimestamp
 
 schema {
     query: Query
+    mutation: Mutation
 }
 
 """
@@ -35,6 +36,22 @@ type Query {
     """
     searchProfiles(query: String!, limit: Int): [ProfileDTO!]!
 }
+
+type Mutation{
+    """
+    Creates a new profile for the given user.
+    - **userId**: The unique identifier of the user.
+    - **description**: The description of the profile.
+    """
+    updateProfileByUserId(userId: Int!, description: String!): ProfileDTO
+
+    """
+    Deletes a profile image by its unique identifier.
+    - **imageId**: The unique identifier of the image to delete.
+    """
+    deleteImageByImageId(imageId: Int!): String
+}
+
 
 type PostDTO {
     idPost: ID!

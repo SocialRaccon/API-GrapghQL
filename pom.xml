@@ -11,7 +11,7 @@
     <groupId>itst</groupId>
     <artifactId>socialraccoon.api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>socialraccoon.api</name>
     <description>API REST para la aplicación social universitaria Social Raccoon</description>
     <url/>
